@@ -1,11 +1,11 @@
 package com.cactusbearer;
 
-public class Item {
-	private int attackValue;
-	private String name;
-	private boolean weapon;
-	private boolean food;
-	private boolean treasure;
+public class Item implements IGameObject, IInteractable {
+	protected int attackValue;
+	protected String name;
+	protected boolean weapon;
+	protected boolean food;
+	protected boolean treasure;
 	//private [some dictionary] customResponse; //the Editor will query the items for this particular table, and see if the action it’s about to do regarding this item triggers a special effect (additional game commands).
 
 	/**
@@ -88,4 +88,17 @@ public class Item {
    		/*returns a list of game commands determined by what the customResponse dictionary instance variable dictates*/
 		return null;
    	}
+
+   	public GameObjectType getType(){
+		return GameObjectType.ITEM;
+	}
+
+	public boolean inContext(){
+		return true;
+	}
+
+	public boolean hasInventoryCheck(){
+		return false;
+	}
+
 }

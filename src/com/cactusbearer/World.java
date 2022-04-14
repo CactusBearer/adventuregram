@@ -1,13 +1,15 @@
 package com.cactusbearer;
 import java.util.*;
+import java.util.function.Function;
 
 public class World
 {
 	private HashMap<String,Room> rooms;//associates unique ID of rooms to object reference
 	private HashMap<String,Item> items;//^^^
 	private HashMap<String,GameCharacter> characters;//^^^
-	private int turnNumber; 
-	private HashMap<Object,Object> locationMap;//maps item to the first holder in which it is found; if more general containment is desirable, lookup can be repeated until the room is achieved.
+	private int turnNumber;
+    private GameCharacter player;
+	private HashMap<IGameObject,IContainer> locationMap;//maps item to the first holder in which it is found; if more general containment is desirable, lookup can be repeated until the room is achieved.
 
 
    /**
@@ -26,6 +28,13 @@ public class World
 
    //methods
 
+   public GameCharacter getPlayer(){
+      return player;
+   }
+
+   public void setPlayer(GameCharacter player){
+      this.player=player;
+   }
    /**
     * Registers the passed Room to the room directory under the passed name
     * Precondition: roomName does not already exist as a key in the rooms HashMap
@@ -48,7 +57,7 @@ public class World
     * @param itemName - String used as key to find item in items HashMap
     * @param holder - holding Object reference stored as a value in the locationMap HashMap
     */
-   public void addItem(Item item, String itemName, Object holder){
+   public void addItem(Item item, String itemName, IContainer holder){
       /*registers the item to the rooms dictionary at the included itemID and records the location of the item
       in the locationMap with the holder. Done upon initialization of item*/
       items.put(itemName,item);
@@ -77,14 +86,12 @@ public class World
     * @param holder - Object reference which is the value in the locationMap HashMap for which all keys are found
     * @return keyList - the ArrayList of all keys which have value holder in the locationMap HashMap
     */
-   public ArrayList<Object> getHeld(Object holder){
-      ArrayList<Object> retVal=new ArrayList(); //make ArrayList of retrieved values
-      Set<Object> allKeys=locationMap.keySet(); //make set of all keys in locationMap
-      Iterator<Object> myIter=allKeys.iterator();
-      while(myIter.hasNext()){ //iterate through all keys in locationMap
-         Object tempKey=myIter.next();
-         if(holder==locationMap.get(tempKey)){ //if the passed holder is indeed holding the iterated key set
-            retVal.add(tempKey); //add the key which was true to the retrieved value ArrayList
+   public ArrayList<IGameObject> getHeld(IContainer holder){
+      ArrayList<IGameObject> retVal=new ArrayList<>(); //make ArrayList of retrieved values
+      Set<IGameObject> allKeys=locationMap.keySet(); //make set of all keys in locationMap
+      for(IGameObject key:allKeys){ //iterate through all keys in locationMap
+         if(holder==locationMap.get(key)){ //if the passed holder is indeed holding the iterated key set
+            retVal.add(key); //add the key which was true to the retrieved value ArrayList
          }
       }
       return retVal;
@@ -97,7 +104,7 @@ public class World
     * @param containedName - Object reference which is the key in the locationMap HashMap
     * @return container - Object which is the value in the locationMap HashMap for the key containedName
     */
-   public Object locateGameObject(Object containedName){
+   public IContainer locateGameObject(IGameObject containedName){
 	   /*refers to locationMap and returns the game object of the first holder of the item object*/
       return locationMap.get(containedName);
    }
@@ -110,7 +117,7 @@ public class World
     * @param newHolder - Object reference which is the value for the passed key in the locationMap HashMap
     * @return success - boolean value describing if the method executed as expected
     */
-   public boolean changeLocation(Object object, Object newHolder){
+   public boolean changeLocation(IGameObject object, IContainer newHolder){
 	   /*updates the locationMap to associate the object of objectID to the newContainerID. Returns true on success.*/
       /*only works item -> room rn*/
       //probably should check to see if already exists
@@ -130,6 +137,21 @@ public class World
       return rooms.get(room);
    }
 
+   public IGameObject getGameObject(String gObjectName){
+      IGameObject reference=null;
+      if(items.containsKey(gObjectName)) reference=items.get(gObjectName);
+      else if(characters.containsKey(gObjectName)) reference=characters.get(gObjectName);
+      return reference;
+   }
+
+   public IContainer getContainer(String containerName){
+      IContainer reference=null;
+      if(items.containsKey(containerName)) reference=null;//items.get(containerName);
+      else if(characters.containsKey(containerName)) reference = characters.get(containerName);
+      else if(rooms.containsKey(containerName)) reference = rooms.get(containerName);
+      return reference;
+   }
+
    /**
     * returns the Item identified by its name
     * Precondition: the passed String exists as a key in the items HashMap
@@ -139,7 +161,8 @@ public class World
     */
    public Item getItem(String item){
 	   /*returns a reference to the item object identified by itemID*/
-      return items.get(item);
+      if(items.containsKey(item)) return items.get(item);
+      return null;
    }
 
    /**
@@ -160,16 +183,18 @@ public class World
     * Postcondition: name value of passed Room object printed and the name values of the objects contained by that room are also printed
     * @param room - Room reference for which the name and names of contained objects are printed
     */
-   public void printRoom(Room room){
-      System.out.print("room: "+room.getName()+"\nitems in "+room.getName()+": ");  
-      Iterator<Object> myIter;
-      myIter=getHeld(room).iterator();
-      while(myIter.hasNext()){
-         Object thing=myIter.next();
-         if(thing instanceof Item) System.out.print(((Item) thing).getName()+" ");
-         else if(thing instanceof GameCharacter) System.out.print(((GameCharacter) thing).getName()+" ");
+   public void printRoom(Room room) {
+  /*    System.out.printf("room: %s\n", room.getName());
+      System.out.print("items in " +room.getName() + ": ");
+      for(IGameObject thing:getHeld(room)){
+         System.out.print(thing.getName()+" ");
       }
       System.out.println();
+
+*/
+
+      System.out.printf("items in %s: %s\n", room.getName(),
+              String.join(", ", getHeld(room).stream().map(IGameObject::getName).toList())); //Christoph is scaring me
    }
 
    /**
@@ -178,10 +203,9 @@ public class World
     * Postcondition: name values for all Rooms and name values for all objects contained within those rooms are printed such that all rooms can be seen with what objects they contain
     */
    public void printAllRooms(){ //useful for testing and debugging!
-      Iterator<Room> myIter = rooms.values().iterator();
-      while(myIter.hasNext()) {
-         printRoom(myIter.next());
-      }
+      /*rooms.values().forEach(this::printRoom);*/ //he's scaring me again
+
+      for(Room room:rooms.values()) printRoom(room);
       System.out.println();
    }
    

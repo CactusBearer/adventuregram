@@ -1,5 +1,8 @@
 package com.cactusbearer;
-public class GameCharacter
+
+import java.util.ArrayList;
+
+public class GameCharacter implements IGameObject, IContainer, IInteractable
 {
    	private int level;
    	private String name;
@@ -8,6 +11,7 @@ public class GameCharacter
 	//private Inventory inv;  
 	private boolean player;
    	private boolean alive;
+   private boolean accessInventory;
 
 	/**
 	 * Initializes a GameCharacter object
@@ -99,4 +103,29 @@ public class GameCharacter
 	public boolean isAlive(){
       	return alive;
    	}
+
+   	public GameObjectType getType(){
+		return GameObjectType.GAMECHARACTER;
+	}
+
+	public int getCapacity(){
+		return 5;
+	}
+
+	public boolean isAccessible(){
+		return accessInventory;
+	}
+
+	public void setAccessInventory(boolean access){
+		accessInventory=access;
+	}
+
+	public boolean hasInventoryCheck(){
+		return true;
+	}
+
+	public boolean inContext(){
+		return true;
+	}
+
 }

@@ -1,10 +1,14 @@
 package com.cactusbearer;
-public class Room {
+
+import java.util.HashMap;
+
+public class Room implements IContainer, IConnection, IInteractable {
 	private String longDesc; //printed out when in room for first time
 	private String shortDesc; //when reentering room
 	private boolean readLong; //whether to show the long description
 	//private [some dictionary] doorLists; //set of references to door objects, associated to directions say by Direction enum
 	private String name;
+	private HashMap<Direction,IConnection> connections;
 
 	/**
 	 * Initializes new Room object
@@ -19,6 +23,7 @@ public class Room {
 		longDesc = longDescription;
 		shortDesc = shortDescription;
 		readLong = true;
+		connections = new HashMap<>();
 		//doorLists=dictOfDoors;
 	}
 
@@ -47,10 +52,13 @@ public class Room {
 	 * Precondition: none
 	 * Postcondition: sets value of readLong to false
 	 */
-	public void beenInRoom() { //used after walking to a room, so it doesn't keep reading you the long description
-		readLong = false;
+	public void setReadLong(boolean val) { //used after walking to a room, so it doesn't keep reading you the long description
+		readLong = val;
 	}
 
+	public boolean readLong(){
+		return readLong;
+	}
 	/**
 	 * returns the value of instance variable name
 	 * Precondition: none
@@ -70,4 +78,35 @@ public class Room {
   /*public Door getDoor(Direction direction){
    	//returns the door object in the requested direction
 	}*/
+	public IConnection getConnection(Direction dir){
+		return connections.get(dir);
+	}
+
+	public void setConnection(Direction dir, IConnection con){
+		connections.put(dir,con);
+	}
+
+	public int getCapacity(){
+		return 99;
+	}
+
+	public boolean isValid(){
+		return true;
+	}
+
+	public String blockedExplanation(){
+		return "this never should appear. something has gone terribly wrong and it's a miracle this program hasn't crashed";
+	}
+
+	public boolean isAccessible(){
+		return true;
+	}
+
+	public boolean inContext(){
+		return true;
+	}
+
+	public boolean hasInventoryCheck(){
+		return true;
+	}
 }

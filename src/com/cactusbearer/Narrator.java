@@ -25,14 +25,49 @@ public class Narrator
     * Postcondition: Each GameCommand in the ArrayList passed through will have been narrated as to have described what happened
     * @param commands - ArrayList of commands the Narrator will process and narrate results of
     */
-   public void narrateResult(ArrayList<GameCommand> commands){
-      GameCommand current=null;
-      for(int i=0;i<commands.size();i-=-1){
-         current=commands.get(i);
-         if(current.action==Command.MOVE){
-            System.out.println(current.subject+" moved "+current.dObject+" to the "+current.iObject);
+   public void narrateResult(ArrayList<GameCommand> commands) {
+      for (GameCommand current:commands){
+         switch(current.action){
+            case MOVE:
+               System.out.println("admin moved " + current.dObject.getName() + " to the " + current.destination.getName());
+               break;
+
+            case GO:
+               System.out.println("You go "+current.direction+" to the "+((Room) current.room.getConnection(current.direction)).getName());
+               break;
+
+            case SLOOK:
+               System.out.println(current.room.getShortDesc());
+               world.printRoom(current.room);
+               break;
+
+            case DROP:
+               break;
+
+            case LOOK:
+               System.out.println(current.room.getLongDesc());
+               world.printRoom(current.room);
+               break;
+
+            case TAKE:
+               break;
+
+            case EXAMINE:
+               break;
+
+            case INVENTORY:
+               break;
+
+            case ERROR:
+               break;
+
+            default:
+               break;
          }
       }
    }
 
+   public void noGo(BlockedConnection blockCon){
+      System.out.println(blockCon.blockedExplanation());
+   }
 }
