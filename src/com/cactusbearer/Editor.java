@@ -78,8 +78,11 @@ public class Editor
                   nar.noGo((BlockedConnection) attempt);
                   //System.out.println("D");
                }
+               break;
 
             case DROP:
+               world.changeLocation(com.dObject,com.destination);
+               executed.add(com);
                break;
 
             case LOOK:
@@ -88,12 +91,25 @@ public class Editor
 
             case TAKE:
                //editor ew
+               world.changeLocation(com.dObject,world.getPlayer());
+               executed.add(com);
+               break;
+
+            case PUT:
+               world.changeLocation(com.dObject,com.destination);
+               executed.add(com);
                break;
 
             case EXAMINE:
+               executed.add(com);
                break;
 
             case INVENTORY:
+               executed.add(com);
+               break;
+
+            case ERROR:
+               executed.add(com);
                break;
 
             default:
@@ -109,7 +125,7 @@ public class Editor
       combinations.put("command~obj1~obj2(where needed)",new GameCommand());
    }
 
-   public boolean validObject(IGameObject object){
+   public boolean validObject(IInteractable object){
       return accessibleItems().contains(object);
    }
 
@@ -122,6 +138,7 @@ public class Editor
             for(IGameObject obj : world.getHeld((IContainer) possibleContainer)) toReturn.add((IInteractable) obj);
          }
       }
+      //for(IInteractable thing : toReturn) System.out.print(thing.getName()+" ");
       return toReturn;
    }
 
@@ -142,4 +159,5 @@ public class Editor
       }
       return false;
    }
+
 }

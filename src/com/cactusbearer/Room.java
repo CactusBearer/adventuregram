@@ -109,4 +109,12 @@ public class Room implements IContainer, IConnection, IInteractable {
 	public boolean hasInventoryCheck(){
 		return true;
 	}
+
+	public boolean portable(){
+		return false;
+	}
+
+	public String getDesc(){
+		return longDesc;
+	}
 }

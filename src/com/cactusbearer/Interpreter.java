@@ -68,6 +68,15 @@ public class Interpreter {
 			case "PUT":
 				parsePut(split);
 				break;
+			case "DROP":
+				parseDrop(split);
+				break;
+			case "INVENTORY":
+				parseInventory(split);
+				break;
+			case "EXAMINE", "CHECK":
+				parseExamine(split);
+				break;
 			default:
 				//System.out.println("1");
 				action=Command.ERROR;
@@ -90,6 +99,9 @@ public class Interpreter {
 
 	private void parseGo(String[] split){
 		action = Command.GO;
+		dObject = null;
+		iObject = null;
+		destination = null;
 
 		switch(split[1].toUpperCase()){
 			case "NORTH":
@@ -118,10 +130,6 @@ public class Interpreter {
 				notes = new String[]{split[1]};
 				break;
 		}
-
-		dObject = null;
-		iObject = null;
-		destination = null;
 	}
 
 	private void parseMove(String[] split){
@@ -138,8 +146,16 @@ public class Interpreter {
 		String checkObject = split[1].toLowerCase();
 		Item reference = world.getItem(checkObject);
 		if(editor.validObject(reference)){
-			dObject = reference;
+			if(reference.portable()) {
+				dObject = reference;
 			}
+			else{
+				action = Command.ERROR;
+				errorCode = Error.IMMOVABLE;
+				notes = new String[]{split[1]};
+				return;
+			}
+		}
 		else{
 			action = Command.ERROR;
 			errorCode = Error.INVALID_ENTRY;
@@ -152,8 +168,95 @@ public class Interpreter {
 	}
 
 	private void parsePut(String[] split){
-		action = Command.PUT;
+		System.out.println("a");
 		dObject = null;
+		iObject = null;
+		destination = null;
+		direction = null;
+		action = Command.PUT;
+		String checkObject = split[1].toLowerCase();
+		Item reference = world.getItem(checkObject);
+		if(editor.validObject(reference)){
+			if(reference.portable()){
+				dObject = reference;
+				System.out.println("b");
+			}
+			else{
+				System.out.println("c");
+				action = Command.ERROR;
+				errorCode = Error.IMMOVABLE;
+				notes = new String[]{split[1]};
+				return;
+			}
+		}
+		else{
+			System.out.println("d");
+			action = Command.ERROR;
+			errorCode = Error.INVALID_ENTRY;
+			notes = new String[]{split[1]};
+			return;
+		}
+		System.out.println("e");
+		checkObject = split[2].toLowerCase();
+		IInteractable rooftop = world.getInteractable(checkObject);
+		if(rooftop.hasInventoryCheck()&&((IContainer) rooftop).isAccessible()&&editor.validObject(rooftop)){
+			destination = (IContainer) rooftop;
+		}
+		else{
+			action = Command.ERROR;
+			errorCode = Error.INVALID_ENTRY;
+			notes = new String[]{split[2]};
+			return;
+		}
+	}
+
+	private void parseDrop(String[] split){
+		dObject = null;
+		iObject = null;
+		destination = world.locateGameObject(world.getPlayer());
+		direction = null;
+		action = Command.DROP;
+		String checkObject = split[1].toLowerCase();
+		Item reference = world.getItem(checkObject);
+		if(editor.validObject(reference)){
+			if(world.locateGameObject(reference)==world.getPlayer()) dObject = reference;
+			else{
+				action = Command.ERROR;
+				errorCode = Error.INACCESSIBLE;
+				notes = new String[]{split[1]};
+				return;
+			}
+		}
+		else{
+			action = Command.ERROR;
+			errorCode = Error.INVALID_ENTRY;
+			notes = new String[]{split[1]};
+			return;
+		}
+	}
+
+	private void parseInventory(String[] split){
+		action = Command.INVENTORY;
+		dObject = null;
+		iObject = null;
+		destination = null;
+		direction = null;
+	}
+
+	private void parseExamine(String[] split){
+		action = Command.EXAMINE;
+		dObject = null;
+		String checkObject = split[1].toLowerCase();
+		Item reference = world.getItem(checkObject);
+		if(editor.validObject(reference)){
+				dObject = reference;
+		}
+		else{
+			action = Command.ERROR;
+			errorCode = Error.INVALID_ENTRY;
+			notes = new String[]{split[1]};
+			return;
+		}
 		iObject = null;
 		destination = null;
 		direction = null;

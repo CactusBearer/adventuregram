@@ -7,6 +7,7 @@ public class World
 	private HashMap<String,Room> rooms;//associates unique ID of rooms to object reference
 	private HashMap<String,Item> items;//^^^
 	private HashMap<String,GameCharacter> characters;//^^^
+    private HashMap<String,IInteractable> interactables;
 	private int turnNumber;
     private GameCharacter player;
 	private HashMap<IGameObject,IContainer> locationMap;//maps item to the first holder in which it is found; if more general containment is desirable, lookup can be repeated until the room is achieved.
@@ -21,6 +22,7 @@ public class World
       rooms=new HashMap<>(); 
       characters=new HashMap<>();
       items=new HashMap<>();
+      interactables = new HashMap<>();
       turnNumber=0; //CHANGE MAYBE
       locationMap=new HashMap<>();
       System.out.println("World loaded"); //just for debugging purposes
@@ -47,6 +49,7 @@ public class World
       All game object IDs are known expected values, these addBlank commands are just setting them as such in
       the dictionaries.*/
       rooms.put(roomName,room);
+      interactables.put(roomName,room);
    }
 
    /**
@@ -55,13 +58,14 @@ public class World
     * Postcondition: item is added to items HashMap with key itemName, and holder is added to locationMap HashMap with key item
     * @param item - Item reference stored as value in items Hashmap, and used as key to find holder in locationMap HashMap
     * @param itemName - String used as key to find item in items HashMap
-    * @param holder - holding Object reference stored as a value in the locationMap HashMap
+    * @param holderName - holding Object reference stored as a value in the locationMap HashMap
     */
-   public void addItem(Item item, String itemName, IContainer holder){
+   public void addItem(Item item, String itemName, String holderName){
       /*registers the item to the rooms dictionary at the included itemID and records the location of the item
       in the locationMap with the holder. Done upon initialization of item*/
       items.put(itemName,item);
-      locationMap.put(item,holder);
+      interactables.put(itemName,item);
+      locationMap.put(item,(IContainer) interactables.get(holderName));
    }
 
    /**
@@ -70,13 +74,14 @@ public class World
     * Postcondition: gchar is added to characters HashMap with key charName, and room is added to locationMap HashMap with key gchar
     * @param gchar - GameCharacter reference stored as value in characters HashMap, and used as a key to find room in locationMap HashMap
     * @param charName - String used as key to find gchar in characters HashMap
-    * @param room - Room reference stored as a value in the locationMap HashMap
+    * @param roomName - Room reference stored as a value in the locationMap HashMap
     */
-   public void addChar(GameCharacter gchar, String charName, Room room){
+   public void addChar(GameCharacter gchar, String charName, String roomName){
       /*registers the character to the characters dictionary at the included charID, done upon
       initialization of the character.*/
       characters.put(charName,gchar);
-      locationMap.put(gchar,room);
+      interactables.put(charName,gchar);
+      locationMap.put(gchar,(Room) interactables.get(roomName));
    }
 
    /**
@@ -108,6 +113,7 @@ public class World
 	   /*refers to locationMap and returns the game object of the first holder of the item object*/
       return locationMap.get(containedName);
    }
+
 
    /**
     * updates the locationMap to asspcoate a new value, newHolder, to an already existing key, object
@@ -152,6 +158,10 @@ public class World
       return reference;
    }
 
+   public IInteractable getInteractable(String itsName){
+      return interactables.get(itsName);
+   }
+
    /**
     * returns the Item identified by its name
     * Precondition: the passed String exists as a key in the items HashMap
@@ -161,8 +171,7 @@ public class World
     */
    public Item getItem(String item){
 	   /*returns a reference to the item object identified by itemID*/
-      if(items.containsKey(item)) return items.get(item);
-      return null;
+      return items.get(item);
    }
 
    /**

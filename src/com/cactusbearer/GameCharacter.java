@@ -30,6 +30,7 @@ public class GameCharacter implements IGameObject, IContainer, IInteractable
       	inv=inventory;*/ //not coded yet
       	player=playable;
       	alive=true;
+	    accessInventory = false;
    	}
 
 	/**
@@ -128,4 +129,7 @@ public class GameCharacter implements IGameObject, IContainer, IInteractable
 		return true;
 	}
 
+	public boolean portable(){
+		return false;
+	}
 }

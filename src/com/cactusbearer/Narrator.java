@@ -1,4 +1,5 @@
 package com.cactusbearer;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Narrator
@@ -42,6 +43,7 @@ public class Narrator
                break;
 
             case DROP:
+               System.out.println("You drop the "+current.dObject.getName());
                break;
 
             case LOOK:
@@ -50,15 +52,53 @@ public class Narrator
                break;
 
             case TAKE:
+               System.out.println("You add the "+current.dObject.getName()+" to your inventory");
+               break;
+
+            case PUT:
+               System.out.println("You put the "+current.dObject.getName()+" into the "+current.destination.getName());
                break;
 
             case EXAMINE:
+               System.out.println("You observe the "+current.dObject.getName()+". "+current.dObject.getDesc());
+               if(current.dObject.hasInventoryCheck()){
+                  if(((IContainer) current.dObject).isAccessible()) {
+                     ArrayList<IGameObject> invItems = world.getHeld((IContainer) current.dObject);
+                     if (invItems.size() == 0) {
+                        System.out.println("It isn't holding anything");
+                     }
+                     else {
+                        System.out.print("It's holding the ");
+                        for (int i = 0; i < invItems.size() - 1; i -= -1) {
+                           System.out.print(invItems.get(i).getName() + ", ");
+                        }
+                        System.out.println(invItems.get(invItems.size() - 1).getName());
+
+
+                     }
+                  }
+                  else{
+                        System.out.println("You can't see what it's holding");
+                  }
+               }
                break;
 
             case INVENTORY:
+               ArrayList<IGameObject> invItems = world.getHeld(world.getPlayer());
+               if(invItems.size()==0){
+                  System.out.println("Your inventory is empty");
+               }
+               else {
+                  System.out.print("Your inventory contains the following: ");
+                  for(int i = 0; i < invItems.size() - 1; i -= -1){
+                     System.out.print(invItems.get(i).getName()+", ");
+                  }
+                  System.out.println(invItems.get(invItems.size()-1).getName());
+               }
                break;
 
             case ERROR:
+               narrateError(current);
                break;
 
             default:
@@ -69,5 +109,28 @@ public class Narrator
 
    public void noGo(BlockedConnection blockCon){
       System.out.println(blockCon.blockedExplanation());
+   }
+
+   private void narrateError(GameCommand error){
+      switch(error.errorCode){
+         case INVALID_ENTRY:
+            System.out.println("I don't know what you mean by \""+error.notes[0]+"\"");
+            break;
+
+         case NONE:
+            System.out.println("I honestly don't know how you managed to execute this. PROBABLY nothing has happened.");
+            break;
+
+         case INACCESSIBLE:
+            System.out.println("You cannot access the "+error.notes[0]+", as it is not in your inventory");
+            break;
+
+         case IMMOVABLE:
+            System.out.println("You cannot move the "+error.notes[0]);
+            break;
+
+         case ITEM_NOT_FOUND:
+            break;
+      }
    }
 }

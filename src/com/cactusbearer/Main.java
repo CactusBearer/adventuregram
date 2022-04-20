@@ -14,8 +14,11 @@ public class Main {
 			Interpreter interpreter = new Interpreter(123456789, editor, world);
 
 			resetRooms(world);
+			resetChars(world);
+			resetItems(world);
 			GameCharacter player = new GameCharacter(1, "player", "a lost adventurer", true);
-			world.addChar(player, player.getName(), world.getRoom("townEdge"));
+			player.setAccessInventory(true);
+			world.addChar(player, player.getName(), "townEdge");
 			world.setPlayer(player);
 			world.getRoom("townEdge").setReadLong(false);
 			interpreter.parseInput("look");
@@ -63,8 +66,25 @@ public class Main {
 		world.printAllRooms();
 		//*/
 	}
+	private static void resetChars(World world){
 
-	public static void resetRooms(World world){
+	}
+
+	private static void resetItems(World world){
+		ItemContainer chest = new ItemContainer("chest","a wooden container, fastened together with nails and chain",5,true);
+
+		Item baseball = new Item(0,"baseball", "its red seams are faded, but still hold", true);
+		Item coin = new Item(0,"coin", "a small gold piece, imprinted with an intricate design",true);
+		Item sword = new Item(1,"sword", "a short but sturdy bronze sword. It could use polishing",true);
+
+		world.addItem(chest, chest.getName(), "townSquare");
+		world.addItem(baseball, baseball.getName(), "townEdge");
+		world.addItem(coin, coin.getName(), "townSquare");
+		world.addItem(sword, sword.getName(), "chest");
+
+	}
+
+	private static void resetRooms(World world){
 		Room townEdge = new Room("townEdge","From here, you see a gate to the WEST...","a guard idly crushes a leaf beneath his boot");
 		BlockedConnection gate = new BlockedConnection("The gate's shut. No way out until it's down");
 		BlockedConnection sky = new BlockedConnection("You still don't have any wings, and the available ladders are about 300000ft short");
