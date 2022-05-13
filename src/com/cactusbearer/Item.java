@@ -1,6 +1,6 @@
 package com.cactusbearer;
 
-public class Item implements IGameObject, IInteractable {
+public class Item implements IGameObject {
 	protected int attackValue;
 	protected String name;
 	/*protected boolean weapon;
@@ -8,6 +8,7 @@ public class Item implements IGameObject, IInteractable {
 	protected boolean treasure;*/
 	protected String description;
 	protected boolean portable;
+	private boolean context;
 	//private [some dictionary] customResponse; //the Editor will query the items for this particular table, and see if the action it’s about to do regarding this item triggers a special effect (additional game commands).
 
 	/**
@@ -17,7 +18,7 @@ public class Item implements IGameObject, IInteractable {
 	 * @param attack - int passed to attackValue of Item object
 	 * @param theName - String passed to name of Item object
 	 */
-	public Item(int attack, String theName, String desc, /*boolean isWeapon, boolean isFood, boolean isTreasure,*/ boolean isPortable/*, [some dictionary] customInteractions*/) {
+	public Item(int attack, String theName, String desc, /*boolean isWeapon, boolean isFood, boolean isTreasure,*/ boolean isPortable/*, [some dictionary] customInteractions*/, boolean inContext) {
 		attackValue = attack;
 		name = theName;
 		description = desc;
@@ -25,6 +26,7 @@ public class Item implements IGameObject, IInteractable {
 		food = isFood;
 		treasure = isTreasure;*/
 		portable = isPortable;
+		context = inContext;
 		//customResponse=customInteractions;
 	}
 
@@ -95,7 +97,7 @@ public class Item implements IGameObject, IInteractable {
 	}
 
 	public boolean inContext(){
-		return true;
+		return context;
 	}
 
 	public boolean hasInventoryCheck(){

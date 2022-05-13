@@ -35,6 +35,17 @@ public class GameCommand
 		notes = strings;
    	}
 
+   public GameCommand(String toRead){
+		subject = null;
+		action = Command.ADMIN_READ;
+		dObject = null;
+		iObject = null;
+		destination = null;
+		direction = null;
+		room = null;
+		errorCode = null;
+		notes = new String[]{toRead};
+   }
    public GameCommand(){
 		subject = null;
 		action = Command.ERROR;

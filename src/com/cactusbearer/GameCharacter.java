@@ -2,7 +2,7 @@ package com.cactusbearer;
 
 import java.util.ArrayList;
 
-public class GameCharacter implements IGameObject, IContainer, IInteractable
+public class GameCharacter implements IGameObject, IContainer
 {
    	private int level;
    	private String name;
@@ -11,8 +11,18 @@ public class GameCharacter implements IGameObject, IContainer, IInteractable
 	//private Inventory inv;  
 	private boolean player;
    	private boolean alive;
+   private boolean context;
    private boolean accessInventory;
+   private boolean attackable;
+   private String[][] dialogue;
+   private int dialogueCounter;
+   private int dialogueSet;
 
+
+
+	public GameCharacter(){
+		name="h";
+	}
 	/**
 	 * Initializes a GameCharacter object
 	 * Precondition: valid parameters passed
@@ -22,7 +32,7 @@ public class GameCharacter implements IGameObject, IContainer, IInteractable
 	 * @param description - String passed to desc of GameCharacter object
 	 * @param playable - boolean passed to determine if GameCharacter object is a player
 	 */
-	public GameCharacter(int levelValue, String theName, String description, /*[some dictionary] customResponse, Inventory inventory, */boolean playable){
+	public GameCharacter(int levelValue, String theName, String description, /*[some dictionary] customResponse, Inventory inventory, */boolean playable, boolean attack, String[][] allDialogue){
 		level=levelValue;
       	name=theName;
       	desc=description;
@@ -31,6 +41,11 @@ public class GameCharacter implements IGameObject, IContainer, IInteractable
       	player=playable;
       	alive=true;
 	    accessInventory = false;
+		context=true;
+		attackable=attack;
+		dialogue=allDialogue;
+		dialogueCounter=0;
+		dialogueSet = 0;
    	}
 
 	/**
@@ -106,7 +121,7 @@ public class GameCharacter implements IGameObject, IContainer, IInteractable
    	}
 
    	public GameObjectType getType(){
-		return GameObjectType.GAMECHARACTER;
+		return GameObjectType.GAME_CHARACTER;
 	}
 
 	public int getCapacity(){
@@ -126,10 +141,25 @@ public class GameCharacter implements IGameObject, IContainer, IInteractable
 	}
 
 	public boolean inContext(){
-		return true;
+		return context;
+	}
+
+	public void setContext(boolean inContext){
+		context=inContext;
 	}
 
 	public boolean portable(){
 		return false;
+	}
+
+	public void setDialogueSet(int set){
+		dialogueSet = set;
+		dialogueCounter = 0;
+	}
+
+	public String getDialogue(){
+		String toReturn = dialogue[dialogueSet][dialogueCounter];
+		if(dialogueCounter<dialogue[dialogueSet].length-1) dialogueCounter-=-1;
+		return toReturn;
 	}
 }

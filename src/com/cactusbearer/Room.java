@@ -2,13 +2,14 @@ package com.cactusbearer;
 
 import java.util.HashMap;
 
-public class Room implements IContainer, IConnection, IInteractable {
+public class Room implements IContainer, IConnection {
 	private String longDesc; //printed out when in room for first time
 	private String shortDesc; //when reentering room
 	private boolean readLong; //whether to show the long description
 	//private [some dictionary] doorLists; //set of references to door objects, associated to directions say by Direction enum
 	private String name;
 	private HashMap<Direction,IConnection> connections;
+	private boolean context;
 
 	/**
 	 * Initializes new Room object
@@ -24,6 +25,7 @@ public class Room implements IContainer, IConnection, IInteractable {
 		shortDesc = shortDescription;
 		readLong = true;
 		connections = new HashMap<>();
+		context=true;
 		//doorLists=dictOfDoors;
 	}
 
@@ -103,7 +105,11 @@ public class Room implements IContainer, IConnection, IInteractable {
 	}
 
 	public boolean inContext(){
-		return true;
+		return context;
+	}
+
+	public void setContext(boolean inContext){
+		context=inContext;
 	}
 
 	public boolean hasInventoryCheck(){

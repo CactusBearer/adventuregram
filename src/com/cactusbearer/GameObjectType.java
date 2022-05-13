@@ -1,5 +1,5 @@
 package com.cactusbearer;
 
 public enum GameObjectType {
-	GAMECHARACTER, ITEM
+	GAME_CHARACTER, ITEM, ITEM_CONTAINER
 }

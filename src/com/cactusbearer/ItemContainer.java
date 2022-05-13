@@ -5,7 +5,7 @@ public class ItemContainer extends Item implements IContainer{
 	private boolean accessible;
 
 	public ItemContainer(String theName, String desc/*boolean isWeapon, boolean isFood, boolean isTreasure, [some dictionary] customInteractions*/, int capacity, boolean accessible){
-		super(0,theName,desc,/*isWeapon,isFood,isTreasure,*/false/*,customInteractions*/);
+		super(0,theName,desc,/*isWeapon,isFood,isTreasure,*/false/*,customInteractions*/,true);
 		this.capacity=capacity;
 		this.accessible=accessible;
 	}
@@ -24,5 +24,9 @@ public class ItemContainer extends Item implements IContainer{
 
 	public boolean hasInventoryCheck(){
 		return true;
+	}
+
+	public GameObjectType getType(){
+		return GameObjectType.ITEM_CONTAINER;
 	}
 }

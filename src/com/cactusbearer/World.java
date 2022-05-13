@@ -5,11 +5,14 @@ import java.util.function.Function;
 public class World
 {
 	private HashMap<String,Room> rooms;//associates unique ID of rooms to object reference
+    private HashMap<String, IConnection> connections;
 	private HashMap<String,Item> items;//^^^
 	private HashMap<String,GameCharacter> characters;//^^^
     private HashMap<String,IInteractable> interactables;
 	private int turnNumber;
+    private int numEndings;
     private GameCharacter player;
+    private boolean gameActive;
 	private HashMap<IGameObject,IContainer> locationMap;//maps item to the first holder in which it is found; if more general containment is desirable, lookup can be repeated until the room is achieved.
 
 
@@ -25,13 +28,27 @@ public class World
       interactables = new HashMap<>();
       turnNumber=0; //CHANGE MAYBE
       locationMap=new HashMap<>();
+      connections = new HashMap<>();
+      gameActive = true;
+      numEndings = 4;
       System.out.println("World loaded"); //just for debugging purposes
    }
 
    //methods
+   public int getNumEndings(){
+      return numEndings;
+   }
 
    public GameCharacter getPlayer(){
       return player;
+   }
+
+   public boolean gameActive(){
+      return gameActive;
+   }
+
+   public void setGameActive(boolean gA){
+      gameActive=gA;
    }
 
    public void setPlayer(GameCharacter player){
@@ -50,6 +67,7 @@ public class World
       the dictionaries.*/
       rooms.put(roomName,room);
       interactables.put(roomName,room);
+      connections.put(roomName,room);
    }
 
    /**
@@ -181,9 +199,17 @@ public class World
     * @param gchar - String which is the name of the GameCharacter for which it is a key in the characters HashMap
     * @return GameCharacter - GameCharacter which is the value in the characters HashMap for the key gchar
     */
-   public GameCharacter getCharacter(String gchar){
+   public GameCharacter getChar(String gchar){
 	   /*returns a reference to the character object identified by charID*/
       return characters.get(gchar);
+   }
+
+   public IConnection getCon(String conchar){
+      return connections.get(conchar);
+   }
+
+   public void addCon(IConnection con, String conName){
+      connections.put(conName,con);
    }
 
    /**
@@ -193,19 +219,44 @@ public class World
     * @param room - Room reference for which the name and names of contained objects are printed
     */
    public void printRoom(Room room) {
-  /*    System.out.printf("room: %s\n", room.getName());
-      System.out.print("items in " +room.getName() + ": ");
+      //System.out.printf("room: %s\n", room.getName());
+      ArrayList<IGameObject> items = new ArrayList<>();
+      ArrayList<IGameObject> chars = new ArrayList<>();
+      ArrayList<IGameObject> containers = new ArrayList<>();
       for(IGameObject thing:getHeld(room)){
-         System.out.print(thing.getName()+" ");
+         if(thing.inContext()){
+            if(thing.getType()==GameObjectType.ITEM_CONTAINER) containers.add(thing);
+            else if(thing.getType()==GameObjectType.GAME_CHARACTER) chars.add(thing);
+            else if(thing.getType()==GameObjectType.ITEM) items.add(thing);
+         }
       }
-      System.out.println();
+      //System.out.print("items in " +room.getName() + ": ");
+      //System.out.println();
 
-*/
+      String iNoneCheck = "";
+      String cNoneCheck = "";
+      String kNoneCheck = "";
+      if(items.size()==0) iNoneCheck = "none";
+      if(chars.size()==0) cNoneCheck = "none";
+      if(containers.size()==0) kNoneCheck = "none";
 
-      System.out.printf("items in %s: %s\n", room.getName(),
-              String.join(", ", getHeld(room).stream().map(IGameObject::getName).toList())); //Christoph is scaring me
+      System.out.printf("items in %s: %s%s\n", room.getName(),
+              String.join(", ", items.stream().map(IGameObject::getName).toList()), iNoneCheck); //Christoph is scaring me*/
+      System.out.printf("characters in %s: %s%s\n", room.getName(),
+              String.join(", ", chars.stream().map(IGameObject::getName).toList()), cNoneCheck);
+      System.out.printf("containers in %s: %s%s\n", room.getName(),
+              String.join(", ", containers.stream().map(IGameObject::getName).toList()), kNoneCheck);
    }
 
+   public void printConnections(Room room) {
+      System.out.println("From here you can go:");
+      if(room.getConnection(Direction.NORTH).inContext()) System.out.println("NORTH to the "+((Room) room.getConnection(Direction.NORTH)).getName());
+      if(room.getConnection(Direction.SOUTH).inContext()) System.out.println("SOUTH to the "+((Room) room.getConnection(Direction.SOUTH)).getName());
+      if(room.getConnection(Direction.EAST).inContext()) System.out.println("EAST to the "+((Room) room.getConnection(Direction.EAST)).getName());
+      if(room.getConnection(Direction.WEST).inContext()) System.out.println("WEST to the "+((Room) room.getConnection(Direction.WEST)).getName());
+      if(room.getConnection(Direction.UP).inContext()) System.out.println("UP to the "+((Room) room.getConnection(Direction.UP)).getName());
+      if(room.getConnection(Direction.DOWN).inContext()) System.out.println("DOWN to the "+((Room) room.getConnection(Direction.DOWN)).getName());
+   }
    /**
     * prints out the names and names of contained Objects for all Rooms
     * Precondition: all Rooms registered in the rooms HashMap

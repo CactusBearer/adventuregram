@@ -29,8 +29,46 @@ public class Narrator
    public void narrateResult(ArrayList<GameCommand> commands) {
       for (GameCommand current:commands){
          switch(current.action){
+            case HELP:
+               System.out.println("You're reminded of Hastings, Nebraska, and exactly what it means to you. That being, of course, what you're able to do:\n"+
+                       "GO [direction] - move in that direction\n" +
+                       "EXAMINE [item] - observe an item more closely\n" +
+                       "LOOK - look around the room you're in\n" +
+                       "INVENTORY - check what items you're carrying\n" +
+                       "TALK [character] - see what a character has to say. not always the same, so try multiple times\n" +
+                       "TAKE [item] - add an item to your inventory\n" +
+                       "SHOW [item] [character] - show an item to a character (wow)\n" +
+                       "GIVE [item] [character] - I think you got this one\n" +
+                       "BUY [item] - buy an item from a vendor\n" +
+                       "HELP - read out this command list");
+               break;
+            case SHOW:
+               System.out.println("You show the "+current.dObject.getName()+" to the "+current.iObject.getName()+". They don't have anything to say.");
+               break;
+            case BUY:
+               System.out.println("You trade your "+current.iObject.getName()+" for the "+current.destination.getName()+"'s "+current.dObject.getName());
+               break;
+            case USE:
+               System.out.println("You clear your mind of everything except the "+current.dObject.getName()+" and focus on it. Nothing happens");
+               break;
+            case GIVE:
+               System.out.println("You try to give the "+current.dObject.getName()+" to the "+current.iObject.getName()+" but they won't take it");
+               break;
+            case TALK:
+               System.out.println("You talk to the "+current.dObject.getName());
+               break;
+
+            case ADMIN_READ:
+               System.out.println(current.notes[0]);
+               break;
+
+            case WIN:
+               System.out.println(current.notes[0]);
+               System.out.println("\nYou found the "+current.notes[1]+" Ending, can you discover all "+world.getNumEndings()+"?");
+               break;
+
             case MOVE:
-               System.out.println("admin moved " + current.dObject.getName() + " to the " + current.destination.getName());
+               //System.out.println("admin moved " + current.dObject.getName() + " to the " + current.destination.getName());
                break;
 
             case GO:
@@ -38,8 +76,10 @@ public class Narrator
                break;
 
             case SLOOK:
-               System.out.println(current.room.getShortDesc());
+               System.out.println(current.room.getShortDesc()+"\n");
                world.printRoom(current.room);
+               System.out.println();
+               world.printConnections(current.room);
                break;
 
             case DROP:
@@ -47,12 +87,14 @@ public class Narrator
                break;
 
             case LOOK:
-               System.out.println(current.room.getLongDesc());
+               System.out.println(current.room.getLongDesc()+"\n");
                world.printRoom(current.room);
+               System.out.println();
+               world.printConnections(current.room);
                break;
 
             case TAKE:
-               System.out.println("You add the "+current.dObject.getName()+" to your inventory");
+               System.out.println("You take the "+current.dObject.getName());
                break;
 
             case PUT:
@@ -60,7 +102,7 @@ public class Narrator
                break;
 
             case EXAMINE:
-               System.out.println("You observe the "+current.dObject.getName()+". "+current.dObject.getDesc());
+               System.out.println("You examine the "+current.dObject.getName()+": "+current.dObject.getDesc());
                if(current.dObject.hasInventoryCheck()){
                   if(((IContainer) current.dObject).isAccessible()) {
                      ArrayList<IGameObject> invItems = world.getHeld((IContainer) current.dObject);
@@ -113,8 +155,11 @@ public class Narrator
 
    private void narrateError(GameCommand error){
       switch(error.errorCode){
+         case TOO_SHORT:
+            System.out.println("Too few arguments, you need a "+error.notes[0]);
+            break;
          case INVALID_ENTRY:
-            System.out.println("I don't know what you mean by \""+error.notes[0]+"\"");
+            System.out.println("I don't know what you mean by \""+error.notes[0]+"\" (maybe try switching around your item and character if you think this should be valid)");
             break;
 
          case NONE:
@@ -127,6 +172,14 @@ public class Narrator
 
          case IMMOVABLE:
             System.out.println("You cannot move the "+error.notes[0]);
+            break;
+
+         case NOT_PURCHASABLE:
+            System.out.println("The "+error.notes[0]+" isn't for sale");
+            break;
+
+         case INSUFFICIENT_FUNDS:
+            System.out.println("You can't buy the "+error.notes[0]+" without a "+error.notes[1]);
             break;
 
          case ITEM_NOT_FOUND:
