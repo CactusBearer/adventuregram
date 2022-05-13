@@ -31,6 +31,7 @@ public class Main {
 
 			}
 			System.out.println("thanks for playing aha");
+			input.nextLine();
 		}
 		/*
 		//Initialize Rooms
