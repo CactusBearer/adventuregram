@@ -31,10 +31,10 @@ public class Narrator
          switch(current.action){
             case HELP:
                System.out.println("You're reminded of Hastings, Nebraska, and exactly what it means to you. That being, of course, what you're able to do:\n"+
-                       "GO [direction] - move in that direction\n" +
-                       "EXAMINE [item] - observe an item more closely\n" +
+                       "GO [direction] - move in that direction. Shortenable to just the direction\n" +
+                       "EXAMINE [item/container] - observe an item more closely\n" +
                        "LOOK - look around the room you're in\n" +
-                       "INVENTORY - check what items you're carrying\n" +
+                       "INVENTORY - check what items you're carrying. Shortenable to INV\n" +
                        "TALK [character] - see what a character has to say. not always the same, so try multiple times\n" +
                        "TAKE [item] - add an item to your inventory\n" +
                        "SHOW [item] [character] - show an item to a character (wow)\n" +

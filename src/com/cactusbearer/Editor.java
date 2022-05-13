@@ -266,6 +266,12 @@ public class Editor
       combinations.put("SHOW~amulet~potionmaster~null~null~END", new GameCommand[]{
               new GameCommand("the potionmaster's eyes widen as you pull out the amulet to show him, but doesn't say anything")
       });
+      combinations.put("SHOW~amulet~scholar~null~null~END", new GameCommand[]{
+              new GameCommand("\"Fascinating...\"\nMaybe somebody else will provide more... meaningful help")
+      });
+      combinations.put("SHOW~amulet~priest~null~null~END", new GameCommand[]{
+              new GameCommand("\"Oh, I can recognize magical runes all right, but those aren't any I know. I reckon you have a dark artifact there, the barkeep might know more about it\"")
+      });
       combinations.put("SHOW~robes~barkeep~null~null~END", new GameCommand[]{
               new GameCommand("the barkeep hurriedly closes your bag as you open it to show him the robes. \"You can't just go around showing those off! Be more careful!\"")
               });

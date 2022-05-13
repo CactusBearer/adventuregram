@@ -71,8 +71,8 @@ public class Main {
 	}
 	private static void resetChars(World world){
 		String[][] smithDialogue = {
-				{"Call me a MILF cause man I love forging","Get it. MILF?","What?"},
-				{"To stop the cult, we'll need to figure out where they meet. I've figured out they're after that amulet, SHOW it to some people, see what you can learn."},
+				{"Shop's closed. Can't trust anyone in this town... anyone could be a cultist","Can't even trust YOU, traveller, now can I?","If I could just find myself an ally for one night..."},
+				{"To stop the cult, we'll need to gain entrance to their meetings. I've figured out they're after that amulet, SHOW it to some people, see what you can learn."},
 				{"This is only the second time I've seen those robes... I'll bring you justice, I'm so close...","Hmm? oh I'm sorry, it just brings back memories. GIVE them here, let's get started"},
 				{"The cult is notoriously secretive, by revealing their leader to their following, we'll... ehm.. well I'm sure it'll do something. Anyway, watch this"},
 				{"FOR THE LOVE OF EVERYTHING HOLY give ME THE amulet"}
@@ -84,9 +84,9 @@ public class Main {
 				{"bah whhatever I'll need that later","noww where did I put my sp- *hic* spare set..."}
 		};
 		String[][] mayorDialogue = {{"Oh hello traveler! A dark time you find yourself in our town","A mysterious cult has this town in its grasp, and we're at a loss at what to do","For everyone's safety, we shut our gate for the night, so no cultists try to escape","oh what to do, what to do..."}};
-		String[][] scholarDialogue = {{"my purpose here is beyond you and this story, fool","I mean aha I love books don't you? If you EXAMINE a container like the bookshelf you can see what it stores!","Try to EXAMINE the bookshelf to see what it's holding!"}};
+		String[][] scholarDialogue = {{"my purpose here is beyond you and this story, fool","I mean aha I love books don't you? If you EXAMINE a container like the bookshelf you can see what it stores!","Try to EXAMINE the bookshelf to see what it's holding! :)"}};
 		String[][] barkeepDialogue = {
-				{"Welcome to barkeep's boozehouseTM, we have BEVERAGEs available to BUY for just a coin!", "Most of the town are regulars, so if you need a rumour, I churn them out","And of course you can forget your woes with a BEVERAGE, which you can BUY with a coin"},
+				{"Welcome to barkeep's boozehouseTM, we have BEVERAGEs available to BUY for just a coin!", "Most of the town are regulars, so I know a little about everyone here","And of course you can forget your woes with a BEVERAGE, which you can BUY with a coin"},
 				{"A BEVERAGE from here GIVEn to the right person can keep them occupied, always available to BUY here for a coin"}
 				};
 
@@ -107,11 +107,11 @@ public class Main {
 	}
 
 	private static void resetItems(World world){
-		Item sign = new Item(0,"sign","\"Welcome to Hastings, Nebraska,\" it reads. From this you understand what exactly you're capable of\n" +
-				"GO [direction] - move in that direction\n" +
-				"EXAMINE [item] - observe an item more closely\n" +
+		Item sign = new Item(0,"sign","\"Welcome to Hastings, Nebraska,\" it reads. \"Turn back while you still can!\" From this you understand what exactly you're capable of\n" +
+				"GO [direction] - move in that direction. Shortenable to just the direction\n" +
+				"EXAMINE [item/container] - observe an item more closely\n" +
 				"LOOK - look around the room you're in\n" +
-				"INVENTORY - check what items you're carrying\n" +
+				"INVENTORY - check what items you're carrying. Shortenable to INV\n" +
 				"TALK [character] - see what a character has to say. not always the same, so try multiple times\n" +
 				"TAKE [item] - add an item to your inventory\n" +
 				"SHOW [item] [character] - show an item to a character (wow)\n" +
